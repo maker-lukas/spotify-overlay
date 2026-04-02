@@ -43,6 +43,7 @@ class SpotifyDBus:
             "art_url": str(data.get("mpris:artUrl", Variant("s", "")).value),
             "track_id": str(data.get("mpris:trackid", Variant("s", "")).value),
             "length": data.get("mpris:length", Variant("x", 0)).value,
+            "url": str(data.get("xesam:url", Variant("s", "")).value),
         }
 
     async def get_playback_status(self):
@@ -72,3 +73,9 @@ class SpotifyDBus:
 
     async def seek(self, offset_microseconds):
         await self.player.call_seek(offset_microseconds)
+
+    async def get_raw_metadata(self):
+        metadata = await self.properties.call_get(PLAYER_INTERFACE, "Metadata")
+        data = metadata.value
+        for key, val in data.items():
+            print(f"{key}: {val.value}")

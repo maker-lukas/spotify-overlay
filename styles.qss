@@ -1,55 +1,95 @@
 #container {
-    background-color: rgba(18, 18, 18, 230);
-    border-radius: 12px;
+    background-color: rgba(18, 18, 18, 240);
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 #trackTitle {
     color: #ffffff;
-    font-size: 14px;
+    font-size: 15px;
     font-weight: bold;
+    padding: 0px;
+    margin: 0px;
+    max-height: 20px;
+}
+
+#trackTitle:hover,
+#trackArtist:hover,
+#trackAlbum:hover {
+    text-decoration: underline;
 }
 
 #trackArtist {
+    color: #ffffff;
+    font-size: 13px;
+    padding: 0px;
+    margin: 0px;
+    max-height: 18px;
+}
+
+#trackAlbum {
     color: #b3b3b3;
     font-size: 12px;
+    padding: 0px;
+    margin: 0px;
+    max-height: 16px;
 }
 
 #controlBtn {
     background-color: transparent;
-    color: #ffffff;
     border: none;
-    font-size: 20px;
-    padding: 4px 12px;
+    padding: 0px;
+    margin: 0px;
 }
 
 #controlBtn:hover {
-    color: #1DB954;
+    background-color: transparent;
+}
+
+#playBtn {
+    background-color: transparent;
+    border: none;
+    padding: 0px;
+    margin: 0px;
+    min-width: 28px;
+    min-height: 28px;
+    max-width: 28px;
+    max-height: 28px;
+}
+
+#playBtn:hover {
+    background-color: transparent;
 }
 
 #albumArt {
-    border-radius: 8px;
+    border-radius: 10px;
 }
 
 #timeline {
-    color: #b3b3b3;
-    font-size: 11px;
+    color: #ffffff;
+    font-size: 10px;
+    min-width: 28px;
 }
 
 #timelineSlider::groove:horizontal {
-    background: #535353;
-    height: 4px;
-    border-radius: 2px;
+    background: rgba(255, 255, 255, 0.12);
+    height: 3px;
+    border-radius: 1px;
 }
 
 #timelineSlider::handle:horizontal {
     background: #ffffff;
-    width: 12px;
-    height: 12px;
+    width: 10px;
+    height: 10px;
     margin: -4px 0;
-    border-radius: 6px;
+    border-radius: 5px;
+}
+
+#timelineSlider::handle:horizontal:hover {
+    background: #1DB954;
 }
 
 #timelineSlider::sub-page:horizontal {
     background: #1DB954;
-    border-radius: 2px;
+    border-radius: 1px;
 }
