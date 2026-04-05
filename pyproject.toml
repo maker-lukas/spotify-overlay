@@ -4,15 +4,31 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "spotify-overlay"
-version = "1.0.0"
+version = "1.0.1"
 description = "A Spotify overlay widget for KDE/Linux"
+readme = "README.md"
+license = "AGPL-3.0-only"
 requires-python = ">=3.10"
+authors = [
+    { name = "Lukas"},
+]
+keywords = ["spotify", "overlay", "kde", "linux", "mpris"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: POSIX :: Linux",
+    "Topic :: Multimedia :: Sound/Audio",
+]
 dependencies = [
     "PySide6",
     "qasync",
     "aiohttp",
     "dbus-next",
 ]
+
+[project.urls]
+Homepage = "https://github.com/maker-lukas/spotify-overlay"
+Repository = "https://github.com/maker-lukas/spotify-overlay"
+Issues = "https://github.com/maker-lukas/spotify-overlay/issues"
 
 [project.scripts]
 spotify-overlay = "spotify_overlay.__main__:main"
