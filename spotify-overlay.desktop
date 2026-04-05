@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Spotify Overlay
+Comment=A minimal Spotify overlay widget
+Exec=/home/lukas/.local/bin/spotify-overlay-launcher
+Icon=spotify
+Terminal=false
+Categories=Audio;Music;Player;
+Keywords=spotify;music;overlay;

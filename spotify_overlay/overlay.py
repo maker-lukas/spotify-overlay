@@ -6,8 +6,8 @@ from PySide6.QtWidgets import QApplication, QWidget, QLabel, QPushButton, QHBoxL
 from PySide6.QtCore import Qt, QTimer, QSize
 from PySide6.QtGui import QPixmap, QImage, QFont, QColor, QPainter, QPainterPath
 
-from spotify_dbus import SpotifyDBus
-from components import load_icon, ClickableSlider, MarqueeLabel, ElidedLabel, HoverButton
+from spotify_overlay.spotify_dbus import SpotifyDBus
+from spotify_overlay.components import load_icon, ClickableSlider, MarqueeLabel, ElidedLabel, HoverButton
 
 
 class Overlay(QWidget):

@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "spotify-overlay"
+version = "1.0.0"
+description = "A Spotify overlay widget for KDE/Linux"
+requires-python = ">=3.10"
+dependencies = [
+    "PySide6",
+    "qasync",
+    "aiohttp",
+    "dbus-next",
+]
+
+[project.scripts]
+spotify-overlay = "spotify_overlay.__main__:main"
+
+[tool.setuptools.packages.find]
+include = ["spotify_overlay*"]
+
+[tool.setuptools.package-data]
+spotify_overlay = ["icons/*.svg", "styles.qss", "keep_above.js"]

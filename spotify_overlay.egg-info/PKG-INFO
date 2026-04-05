@@ -1,0 +1,9 @@
+Metadata-Version: 2.4
+Name: spotify-overlay
+Version: 1.0.0
+Summary: A Spotify overlay widget for KDE/Linux
+Requires-Python: >=3.10
+Requires-Dist: PySide6
+Requires-Dist: qasync
+Requires-Dist: aiohttp
+Requires-Dist: dbus-next
