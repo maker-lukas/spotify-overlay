@@ -4,7 +4,9 @@ A minimal, always-on-top Spotify overlay for Linux.
 
 ![screenshot](https://raw.githubusercontent.com/maker-lukas/spotify-overlay/main/Screenshot_20260405_153140.png)
 
-![video](https://github.com/user-attachments/assets/e6cf791e-7672-4c7c-9912-8f618322929f)
+### Demo
+
+<video src="https://github.com/user-attachments/assets/e6cf791e-7672-4c7c-9912-8f618322929f" controls width="600"></video>
 
 ## Features
 
