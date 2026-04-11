@@ -1,2 +1,0 @@
-[console_scripts]
-spotify-overlay = spotify_overlay.__main__:main

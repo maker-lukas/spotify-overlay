@@ -1,7 +1,9 @@
 import sys
 import os
+import shutil
 import socket
 import asyncio
+import signal
 from PySide6.QtWidgets import QApplication, QSystemTrayIcon, QMenu
 from PySide6.QtCore import QSocketNotifier
 from PySide6.QtGui import QIcon
@@ -21,11 +23,45 @@ def get_resource_path(filename):
     return os.path.join(os.path.dirname(os.path.abspath(__file__)), filename)
 
 
+def install_desktop_entry():
+    apps_dir = os.path.join(os.path.expanduser("~"), ".local", "share", "applications")
+    icons_dir = os.path.join(os.path.expanduser("~"), ".local", "share", "icons", "hicolor", "scalable", "apps")
+    os.makedirs(apps_dir, exist_ok=True)
+    os.makedirs(icons_dir, exist_ok=True)
+
+    icon_src = get_resource_path("icons/icon.svg")
+    icon_dest = os.path.join(icons_dir, "spotify-overlay.svg")
+    shutil.copy2(icon_src, icon_dest)
+
+    exe_path = shutil.which("spotify-overlay") or "spotify-overlay"
+    desktop_entry = f"""[Desktop Entry]
+Type=Application
+Name=Spotify Overlay
+Comment=A minimal Spotify overlay widget
+Exec={exe_path}
+Icon=spotify-overlay
+Terminal=false
+Categories=Audio;Music;Player;
+Keywords=spotify;music;overlay;
+"""
+    desktop_path = os.path.join(apps_dir, "spotify-overlay.desktop")
+    with open(desktop_path, "w") as f:
+        f.write(desktop_entry)
+
+    print(f"Installed desktop entry: {desktop_path}")
+    print(f"Installed icon: {icon_dest}")
+    print("Spotify Overlay should now appear in your app launcher.")
+
+
 def main():
+    if "--install" in sys.argv:
+        install_desktop_entry()
+        return
     app = QApplication(sys.argv)
 
     loop = QEventLoop(app)
     asyncio.set_event_loop(loop)
+    signal.signal(signal.SIGINT, lambda *_: app.quit())
 
     overlay = Overlay()
 
@@ -36,7 +72,7 @@ def main():
         pass
 
     # --- System tray icon ---
-    tray_icon = QSystemTrayIcon(QIcon(get_resource_path("icons/spotify.svg")), app)
+    tray_icon = QSystemTrayIcon(QIcon(get_resource_path("icons/icon.svg")), app)
 
     tray_menu = QMenu()
     show_action = tray_menu.addAction("Show / Hide")
@@ -81,10 +117,21 @@ def main():
     app.aboutToQuit.connect(cleanup)
 
     async def start():
-        await overlay.spotify.connect()
         while True:
-            if overlay.isVisible():
+            if not overlay.spotify.player:
+                overlay.title_label.setText("Spotify is not open")
+                overlay.artist_label.setText("")
+                overlay.album_label.setText("")
+                try:
+                    await overlay.spotify.connect()
+                except Exception:
+                    await asyncio.sleep(2)
+                    continue
+            try:
                 await overlay.refresh()
+            except Exception:
+                overlay.spotify.player = None
+                overlay.spotify.properties = None
             await asyncio.sleep(0.25)
 
     asyncio.ensure_future(start())

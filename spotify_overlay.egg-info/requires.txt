@@ -1,4 +1,0 @@
-PySide6
-qasync
-aiohttp
-dbus-next

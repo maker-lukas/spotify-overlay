@@ -16,7 +16,10 @@ A minimal, always-on-top Spotify overlay for Linux.
 
 ```bash
 pip install spotify-overlay
+spotify-overlay --install
 ```
+
+The `--install` flag adds Spotify Overlay to your app launcher so you can launch it like a normal app!
 
 Or from source:
 
