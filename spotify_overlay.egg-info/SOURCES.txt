@@ -22,4 +22,5 @@ spotify_overlay/icons/play.svg
 spotify_overlay/icons/previous.svg
 spotify_overlay/icons/repeat.svg
 spotify_overlay/icons/repeat1.svg
+spotify_overlay/icons/search.svg
 spotify_overlay/icons/shuffle.svg

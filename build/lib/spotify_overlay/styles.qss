@@ -1,14 +1,5 @@
-#searchBar {
-    background-color: black;
-    border: none;
-    border-radius: 16px;
-    color: #ffffff;
-    font-size: 13px;
-    padding: 4px 12px 4px 8px;
-}
-
 #container {
-    background-color: black;
+    background-color: rgba(18, 18, 18, 240);
     border-radius: 14px;
     border: 1px solid rgba(255, 255, 255, 0.06);
 }
@@ -60,6 +51,10 @@
     border: none;
     padding: 0px;
     margin: 0px;
+    min-width: 28px;
+    min-height: 28px;
+    max-width: 28px;
+    max-height: 28px;
 }
 
 #playBtn:hover {
@@ -76,29 +71,38 @@
     min-width: 28px;
 }
 
-#timelineSlider {
-    background: transparent;
-}
-
 #timelineSlider::groove:horizontal {
     background: transparent;
-    border: none;
-    height: 0px;
+    height: 3px;
+    border-radius: 1px;
 }
 
 #timelineSlider::handle:horizontal {
     background: transparent;
-    border: none;
-    width: 0px;
-    height: 0px;
+    width: 10px;
+    height: 10px;
+    margin: -4px 0;
+    border-radius: 5px;
+}
+
+#timelineSlider:hover::handle:horizontal {
+    background: #ffffff;
 }
 
 #timelineSlider::sub-page:horizontal {
-    background: transparent;
-    border: none;
+    background: #ffffff;
+    border-radius: 1px;
+}
+
+#timelineSlider:hover::sub-page:horizontal {
+    background: #1DB954;
 }
 
 #timelineSlider::add-page:horizontal {
-    background: transparent;
-    border: none;
+    background: rgba(255, 255, 255, 0.12);
+    border-radius: 1px;
+}
+
+#timelineSlider:hover::add-page:horizontal {
+    background: rgba(255, 255, 255, 0.3);
 }

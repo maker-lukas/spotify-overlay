@@ -6,7 +6,7 @@ A minimal, always-on-top Spotify overlay for Linux.
 
 ### Demo
 
-<video src="https://github.com/user-attachments/assets/e6cf791e-7672-4c7c-9912-8f618322929f" controls width="600"></video>
+## **Watch the demo video here:** https://github.com/user-attachments/assets/e6cf791e-7672-4c7c-9912-8f618322929f
 
 ## Features
 

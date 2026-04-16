@@ -2,9 +2,9 @@ import os
 import asyncio
 import subprocess
 import aiohttp
-from PySide6.QtWidgets import QApplication, QWidget, QLabel, QPushButton, QHBoxLayout, QVBoxLayout, QLineEdit
+from PySide6.QtWidgets import QApplication, QWidget, QLabel, QPushButton, QHBoxLayout, QVBoxLayout
 from PySide6.QtCore import Qt, QTimer, QSize
-from PySide6.QtGui import QPixmap, QImage, QFont, QColor, QPainter, QPainterPath, QShortcut, QKeySequence
+from PySide6.QtGui import QPixmap, QImage, QFont, QColor, QPainter, QPainterPath
 
 from spotify_overlay.spotify_dbus import SpotifyDBus
 from spotify_overlay.components import load_icon, ClickableSlider, MarqueeLabel, ElidedLabel, HoverButton
@@ -15,19 +15,10 @@ class Overlay(QWidget):
         super().__init__()
         self.spotify = SpotifyDBus()
         self.current_art_url = None
-        self._last_position = 0
-        self._last_length = 0
-        self._playing = False
-
-        self._interpolation_timer = QTimer(self)
-        self._interpolation_timer.setInterval(16)
-        self._interpolation_timer.timeout.connect(self._interpolate_position)
-        self._interpolation_timer.start()
 
         self.setWindowTitle("Spotify Overlay")
         self.setObjectName("spotify-overlay")
-        self._search_bar_height = 40
-        self.setFixedSize(400, 220 + self._search_bar_height)
+        self.setFixedSize(400, 220)
         self.setWindowFlags(
             Qt.WindowType.FramelessWindowHint
             | Qt.WindowType.WindowStaysOnTopHint
@@ -43,8 +34,6 @@ class Overlay(QWidget):
     def on_focus_changed(self, old_widget, new_widget):
         """Hide overlay when focus changes to another widget/window"""
         if self.isVisible() and new_widget != self and not self.isAncestorOf(new_widget):
-            if self.search_bar.isVisible() and new_widget == self.search_bar:
-                return
             self.hide()
 
     def showEvent(self, event):
@@ -69,25 +58,14 @@ class Overlay(QWidget):
         except Exception:
             pass
 
-    def hideEvent(self, event):
-        if self.search_bar.isVisible():
-            self.search_bar.hide()
-            self.search_bar.clear()
-        super().hideEvent(event)
-
     def closeEvent(self, event):
         self.hide()
         event.accept()
 
     def keyPressEvent(self, event):
         key = event.key()
-        modifiers = event.modifiers()
-        if key == Qt.Key.Key_F and modifiers & Qt.KeyboardModifier.ControlModifier:
-            self.toggle_search()
-        elif key == Qt.Key.Key_Escape:
-            if self.search_bar.isVisible():
-                self.toggle_search()
-            elif self.isVisible():
+        if key == Qt.Key.Key_Escape:
+            if self.isVisible():
                 self.hide()
             else:
                 self.show()
@@ -98,12 +76,10 @@ class Overlay(QWidget):
             self.on_next()
         elif key == Qt.Key.Key_Left:
             self.on_previous()
-        elif key == Qt.Key.Key_Down:
-            self.on_shuffle()
         elif key == Qt.Key.Key_Up:
+            self.on_shuffle()
+        elif key == Qt.Key.Key_Down:
             self.on_repeat()
-        elif key == Qt.Key.Key_Slash:
-            self.toggle_search()
         else:
             super().keyPressEvent(event)
 
@@ -120,7 +96,6 @@ class Overlay(QWidget):
 
         container = QWidget()
         container.setObjectName("container")
-        container.setFixedHeight(220)
         container_layout = QVBoxLayout(container)
         container_layout.setContentsMargins(12, 12, 12, 8)
         container_layout.setSpacing(6)
@@ -175,20 +150,8 @@ class Overlay(QWidget):
         self.play_btn = QPushButton()
         self.play_btn.setIcon(load_icon("pause.svg", "#ffffff"))
         self.play_btn.setIconSize(QSize(28, 28))
-        self.play_btn.setFixedSize(QSize(32, 32))
         self.play_btn.setObjectName("playBtn")
         self.play_btn.clicked.connect(self.on_play_pause)
-
-        def _play_enter(event, btn=self.play_btn):
-            btn.setIconSize(QSize(30, 30))
-            QPushButton.enterEvent(btn, event)
-
-        def _play_leave(event, btn=self.play_btn):
-            btn.setIconSize(QSize(28, 28))
-            QPushButton.leaveEvent(btn, event)
-
-        self.play_btn.enterEvent = _play_enter
-        self.play_btn.leaveEvent = _play_leave
         controls.addWidget(self.play_btn)
 
         self.next_btn = HoverButton("next.svg", 16)
@@ -208,61 +171,24 @@ class Overlay(QWidget):
 
         self.pos_label = QLabel("0:00")
         self.pos_label.setObjectName("timeline")
-        self.pos_label.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
-        self.pos_label.setFixedWidth(28)
         timeline_row.addWidget(self.pos_label)
 
         self.timeline_slider = ClickableSlider(Qt.Orientation.Horizontal)
         self.timeline_slider.setObjectName("timelineSlider")
-        self.timeline_slider.setRange(0, 100000)
+        self.timeline_slider.setRange(0, 1000)
         self.timeline_slider.sliderReleased.connect(self.on_seek)
         timeline_row.addWidget(self.timeline_slider)
 
         self.len_label = QLabel("0:00")
         self.len_label.setObjectName("timeline")
-        self.len_label.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter)
-        self.len_label.setFixedWidth(28)
         timeline_row.addWidget(self.len_label)
 
         container_layout.addLayout(timeline_row)
-        main_layout.addWidget(container, 0, Qt.AlignmentFlag.AlignBottom)
+        main_layout.addWidget(container)
 
         for widget in [self.shuffle_btn, self.prev_btn, self.play_btn,
                        self.next_btn, self.repeat_btn, self.timeline_slider]:
             widget.setFocusPolicy(Qt.FocusPolicy.NoFocus)
-
-        self.search_bar = QLineEdit(self)
-        self.search_bar.setObjectName("searchBar")
-        self.search_bar.setPlaceholderText("Search Spotify")
-        self.search_bar.setGeometry(0, 4, 400, 32)
-        self.search_bar.addAction(load_icon("search.svg", "#a0a0a0"), QLineEdit.ActionPosition.LeadingPosition)
-        self.search_bar.returnPressed.connect(self.on_search)
-        self.search_bar.installEventFilter(self)
-        self.search_bar.hide()
-
-    def toggle_search(self):
-        if self.search_bar.isVisible():
-            self.search_bar.hide()
-            self.search_bar.clear()
-            self.setFocus()
-        else:
-            self.search_bar.raise_()
-            self.search_bar.show()
-            self.search_bar.setFocus()
-
-    def eventFilter(self, obj, event):
-        if obj == self.search_bar and event.type() == event.Type.KeyPress:
-            if event.key() == Qt.Key.Key_Escape:
-                self.toggle_search()
-                return True
-        return super().eventFilter(obj, event)
-
-    def on_search(self):
-        query = self.search_bar.text().strip()
-        if query:
-            uri = f"spotify:search:{query.replace(' ', '+')}"
-            subprocess.Popen(["xdg-open", uri])
-            self.toggle_search()
 
     def on_play_pause(self):
         asyncio.ensure_future(self.spotify.play_pause())
@@ -289,23 +215,14 @@ class Overlay(QWidget):
         next_status = cycle[current]
         await self.spotify.set_loop_status(next_status)
 
-    def _interpolate_position(self):
-        if self._playing and not self.timeline_slider.isSliderDown() and self._last_length > 0:
-            self._last_position += 16_000
-            pos = min(self._last_position, self._last_length)
-            pos_sec = pos // 1_000_000
-            self.pos_label.setText(f"{pos_sec // 60}:{pos_sec % 60:02d}")
-            self.timeline_slider.setValue(int(pos / self._last_length * 100000))
-
     def on_seek(self):
         asyncio.ensure_future(self.do_seek())
 
     async def do_seek(self):
         metadata = await self.spotify.get_metadata()
         length = metadata.get("length", 0)
-        fraction = self.timeline_slider.value() / 100000
+        fraction = self.timeline_slider.value() / 1000
         target = int(length * fraction)
-        self._last_position = target
         await self.spotify.set_position(metadata["track_id"], target)
 
     async def refresh(self):
@@ -331,18 +248,19 @@ class Overlay(QWidget):
 
             if status == "Playing":
                 self.play_btn.setIcon(load_icon("pause.svg", "#ffffff"))
-                self._playing = True
             else:
                 self.play_btn.setIcon(load_icon("play.svg", "#ffffff"))
-                self._playing = False
             
             position = await self.spotify.get_position()
             length = metadata.get("length", 0)
-            self._last_position = position
-            self._last_length = length
 
+            pos_sec = position // 1_000_000
             len_sec = length // 1_000_000
+            self.pos_label.setText(f"{pos_sec // 60}:{pos_sec % 60:02d}")
             self.len_label.setText(f"{len_sec // 60}:{len_sec % 60:02d}")
+
+            if not self.timeline_slider.isSliderDown() and length > 0:
+                self.timeline_slider.setValue(int(position / length * 1000))
 
             shuffle = await self.spotify.get_shuffle()
             self.shuffle_btn.set_active_color("#1DB954" if shuffle else None)
@@ -371,6 +289,7 @@ class Overlay(QWidget):
             self.artist_label.setText("")
 
     def show_ad_placeholder(self):
+        """Show 'AD' text as placeholder for ads"""
         pixmap = QPixmap(120, 120)
         pixmap.fill(Qt.GlobalColor.transparent)
         

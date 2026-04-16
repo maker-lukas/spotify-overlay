@@ -1,6 +1,6 @@
 Metadata-Version: 2.4
 Name: spotify-overlay
-Version: 1.0.4
+Version: 1.0.10
 Summary: A Spotify overlay widget for KDE/Linux
 Author: Lukas
 License-Expression: AGPL-3.0-only
@@ -23,6 +23,10 @@ Requires-Dist: dbus-next
 A minimal, always-on-top Spotify overlay for Linux.
 
 ![screenshot](https://raw.githubusercontent.com/maker-lukas/spotify-overlay/main/Screenshot_20260405_153140.png)
+
+### Demo
+
+## **Watch the demo video here:** https://github.com/user-attachments/assets/e6cf791e-7672-4c7c-9912-8f618322929f
 
 ## Features
 

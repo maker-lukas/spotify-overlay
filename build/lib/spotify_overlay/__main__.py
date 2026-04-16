@@ -4,8 +4,8 @@ import shutil
 import socket
 import asyncio
 import signal
-from PySide6.QtWidgets import QApplication, QSystemTrayIcon, QMenu, QDialog, QVBoxLayout, QLabel, QPushButton
-from PySide6.QtCore import Qt, QSocketNotifier
+from PySide6.QtWidgets import QApplication, QSystemTrayIcon, QMenu
+from PySide6.QtCore import QSocketNotifier
 from PySide6.QtGui import QIcon
 
 try:
@@ -67,16 +67,16 @@ def main():
 
     try:
         with open(get_resource_path("styles.qss")) as f:
-            styles = f.read()
-            overlay.setStyleSheet(styles)
+            overlay.setStyleSheet(f.read())
     except FileNotFoundError:
         pass
 
+    # --- System tray icon ---
     tray_icon = QSystemTrayIcon(QIcon(get_resource_path("icons/icon.svg")), app)
 
     tray_menu = QMenu()
-    help_action = tray_menu.addAction("Help")
-    help_action.triggered.connect(show_help)
+    show_action = tray_menu.addAction("Show / Hide")
+    show_action.triggered.connect(lambda: toggle_overlay(overlay))
     tray_menu.addSeparator()
     quit_action = tray_menu.addAction("Quit")
     quit_action.triggered.connect(app.quit)
@@ -138,37 +138,6 @@ def main():
 
     with loop:
         loop.run_forever()
-
-
-_help_dialog = None
-
-
-def show_help():
-    global _help_dialog
-    _help_dialog = QMessageBox()
-    _help_dialog.setWindowTitle("Spotify Overlay — Help")
-    _help_dialog.setTextFormat(1)  # Qt.RichText
-    _help_dialog.setWindowFlags(
-        _help_dialog.windowFlags() | Qt.WindowType.WindowStaysOnTopHint
-    )
-    _help_dialog.setText(
-        "<h3>Keybinds</h3>"
-        "<table cellpadding='4'>"
-        "<tr><td><b>Space</b></td><td>Play / Pause</td></tr>"
-        "<tr><td><b>→ Right</b></td><td>Next Track</td></tr>"
-        "<tr><td><b>← Left</b></td><td>Previous Track</td></tr>"
-        "<tr><td><b>↑ Up</b></td><td>Cycle Repeat Mode</td></tr>"
-        "<tr><td><b>↓ Down</b></td><td>Toggle Shuffle</td></tr>"
-        "<tr><td><b>Ctrl+F</b> or <b>/</b></td><td>Open Search</td></tr>"
-        "<tr><td><b>Enter</b></td><td>Submit Search</td></tr>"
-        "<tr><td><b>Escape</b></td><td>Close Search / Hide Overlay</td></tr>"
-        "</table>"
-        "<br>"
-        "<b>Tray Icon:</b> Left-click to toggle overlay visibility."
-    )
-    _help_dialog.show()
-    _help_dialog.raise_()
-    _help_dialog.activateWindow()
 
 
 def toggle_overlay(overlay):

@@ -1,82 +1,22 @@
 import subprocess
 from PySide6.QtWidgets import QLabel, QPushButton, QSlider
 from PySide6.QtCore import Qt, QTimer, QSize, QPropertyAnimation, Property
-from PySide6.QtGui import QPainter, QColor, QPainterPath
+from PySide6.QtGui import QPainter
 
 from .utils import load_icon
 
 
 class ClickableSlider(QSlider):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.setMouseTracking(True)
-        self._hovered = False
-        self.setFixedHeight(16)
-
-    def enterEvent(self, event):
-        self._hovered = True
-        self.update()
-        super().enterEvent(event)
-
-    def leaveEvent(self, event):
-        self._hovered = False
-        self.update()
-        super().leaveEvent(event)
-
-    def _value_from_pos(self, x):
-        x = max(0, min(x, self.width()))
-        return int(x / self.width() * self.maximum())
-
     def mousePressEvent(self, event):
         if event.button() == Qt.MouseButton.LeftButton:
-            self.setSliderDown(True)
-            self.setValue(self._value_from_pos(event.position().x()))
-
-    def mouseMoveEvent(self, event):
-        if self.isSliderDown():
-            self.setValue(self._value_from_pos(event.position().x()))
-        super().mouseMoveEvent(event)
-
-    def mouseReleaseEvent(self, event):
-        if event.button() == Qt.MouseButton.LeftButton and self.isSliderDown():
-            self.setSliderDown(False)
+            value = int(event.position().x() / self.width() * self.maximum())
+            self.setValue(value)
             self.sliderReleased.emit()
-        super().mouseReleaseEvent(event)
-
-    def paintEvent(self, event):
-        painter = QPainter(self)
-        painter.setRenderHint(QPainter.RenderHint.Antialiasing)
-
-        bar_height = 3
-        handle_size = 10
-        y = (self.height() - bar_height) / 2
-        fraction = (self.value() - self.minimum()) / max(1, self.maximum() - self.minimum())
-        fill_width = fraction * self.width()
-
-        track_color = QColor(255, 255, 255, 77)
-        fill_color = QColor("#1DB954") if self._hovered else QColor("#ffffff")
-
-        path_bg = QPainterPath()
-        path_bg.addRoundedRect(0, y, self.width(), bar_height, bar_height / 2, bar_height / 2)
-        painter.fillPath(path_bg, track_color)
-
-        if fill_width > 0:
-            path_fill = QPainterPath()
-            path_fill.addRoundedRect(0, y, fill_width, bar_height, bar_height / 2, bar_height / 2)
-            painter.fillPath(path_fill, fill_color)
-
-        if self._hovered:
-            cx = fill_width
-            cy = self.height() / 2
-            painter.setBrush(QColor("#ffffff"))
-            painter.setPen(Qt.PenStyle.NoPen)
-            painter.drawEllipse(int(cx - handle_size / 2), int(cy - handle_size / 2), handle_size, handle_size)
-
-        painter.end()
+        super().mousePressEvent(event)
 
 class MarqueeLabel(QLabel):
-    SCROLL_PX_PER_SEC = 22
-    PAUSE_DURATION = 2800
+    SCROLL_PX_PER_SEC = 22    # scrolling speed
+    PAUSE_DURATION = 2800     # ms to hold at each end
 
     def __init__(self, text="", parent=None):
         super().__init__(text, parent)
