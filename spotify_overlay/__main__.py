@@ -58,6 +58,7 @@ def main():
         install_desktop_entry()
         return
     app = QApplication(sys.argv)
+    app.setQuitOnLastWindowClosed(False)
 
     loop = QEventLoop(app)
     asyncio.set_event_loop(loop)
@@ -145,13 +146,21 @@ _help_dialog = None
 
 def show_help():
     global _help_dialog
-    _help_dialog = QMessageBox()
+    if _help_dialog is not None:
+        _help_dialog.close()
+
+    _help_dialog = QDialog()
     _help_dialog.setWindowTitle("Spotify Overlay — Help")
-    _help_dialog.setTextFormat(1)  # Qt.RichText
     _help_dialog.setWindowFlags(
-        _help_dialog.windowFlags() | Qt.WindowType.WindowStaysOnTopHint
+        Qt.WindowType.Window
+        | Qt.WindowType.WindowStaysOnTopHint
+        | Qt.WindowType.WindowCloseButtonHint
     )
-    _help_dialog.setText(
+    _help_dialog.setFixedSize(360, 320)
+
+    layout = QVBoxLayout(_help_dialog)
+
+    content = QLabel(
         "<h3>Keybinds</h3>"
         "<table cellpadding='4'>"
         "<tr><td><b>Space</b></td><td>Play / Pause</td></tr>"
@@ -159,13 +168,21 @@ def show_help():
         "<tr><td><b>← Left</b></td><td>Previous Track</td></tr>"
         "<tr><td><b>↑ Up</b></td><td>Cycle Repeat Mode</td></tr>"
         "<tr><td><b>↓ Down</b></td><td>Toggle Shuffle</td></tr>"
-        "<tr><td><b>Ctrl+F</b> or <b>/</b></td><td>Open Search</td></tr>"
+        "<tr><td><b>Ctrl+F / </b></td><td>Open Search</td></tr>"
         "<tr><td><b>Enter</b></td><td>Submit Search</td></tr>"
         "<tr><td><b>Escape</b></td><td>Close Search / Hide Overlay</td></tr>"
         "</table>"
         "<br>"
         "<b>Tray Icon:</b> Left-click to toggle overlay visibility."
     )
+    content.setTextFormat(Qt.TextFormat.RichText)
+    content.setWordWrap(True)
+    layout.addWidget(content)
+
+    close_btn = QPushButton("Close")
+    close_btn.clicked.connect(_help_dialog.close)
+    layout.addWidget(close_btn)
+
     _help_dialog.show()
     _help_dialog.raise_()
     _help_dialog.activateWindow()
