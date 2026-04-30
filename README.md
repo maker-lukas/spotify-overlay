@@ -10,6 +10,9 @@ A minimal, always-on-top Spotify overlay for Linux.
 
 https://cdn.hackclub.com/019de041-8640-7c8e-b268-1b31af582144/spotifyoverlaydemo.mp4
 
+or watch demo on youtube:
+https://www.youtube.com/watch?v=lz-RwL30tBo
+
 ---
 
 ## Features
