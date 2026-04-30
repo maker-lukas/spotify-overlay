@@ -8,7 +8,7 @@ A minimal, always-on-top Spotify overlay for Linux.
 
 **Click on the link below to see the DEMO. The link is not broken, PyPI does not support video previews.**
 
-https://github.com/user-attachments/assets/e6cf791e-7672-4c7c-9912-8f618322929f
+https://cdn.hackclub.com/019de041-8640-7c8e-b268-1b31af582144/spotifyoverlaydemo.mp4
 
 ---
 
@@ -114,7 +114,7 @@ Common ways to bind it:
 - **KDE Plasma:** *System Settings → Shortcuts → Custom Shortcuts → Edit → New → Global Shortcut → Command/URL*. Set a trigger key, paste the command above as the action.
 - **GNOME:** *Settings → Keyboard → Keyboard Shortcuts → Custom Shortcuts → +*. Name it, paste the command, assign a key.
 
-> Make sure `spotify-overlay` is already running (autostarted, or launched once from the menu). The socket only exists while the app is running.
+Make sure `spotify-overlay` is already running (autostarted, or launched once from the menu). The socket only exists while the app is running.
 
 ## Keyboard Shortcuts (while overlay is focused)
 
@@ -137,7 +137,7 @@ Clicking the **track title**, **artist**, or **album** opens the corresponding p
 
 Closing the overlay window (clicking outside it, pressing `Esc`, etc.) only **hides** it — the app stays alive in the tray so the global keybind keeps working.
 
-To **fully quit**, right click the tray icon and choose **Quit**.
+To **fully quit**, right click the tray icon and click **Quit**.
 
 ---
 
