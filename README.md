@@ -33,7 +33,7 @@ https://www.youtube.com/watch?v=lz-RwL30tBo
 - Linux with D-Bus
 - Spotify desktop client (the offcial on of course)
 - Python 3.10+
-- KDE Plasma (for the always-on-top behavior; the overlay still runs but staying on- op isn't guaranteed)
+- KDE Plasma (for the always-on-top behavior; the overlay still runs but staying on top isn't guaranteed)
 - `qdbus6` available on `PATH` (comes with Qt 6 / KDE Plasma 6)
 
 ---
@@ -69,7 +69,7 @@ spotify-overlay --install
    ```
 3. The overlay window appears and a **system tray icon** is added.
 
-The overlay is designed to be **always running in the background** — you toggle it open/closed as needed via the tray icon or a global keybind (see below). Closing the overlay window only hides it; the app keeps running in the tray.
+The overlay is designed to be **always running in the background** you toggle it open/closed as needed via the tray icon or a global keybind (see below). Closing the overlay window only hides it; the app keeps running in the tray.
 
 ---
 
@@ -79,8 +79,8 @@ Once the app is running, look for the Spotify Overlay icon in your system tray:
 
 - **Left-click** the tray icon → toggle the overlay (show/hide)
 - **Right-click** the tray icon → menu with:
-  - **Help** — shows the in-app keybind cheat sheet
-  - **Quit** — fully exits the app (this is the *only* way to quit; closing the window just hides it)
+  - **Help** - shows the in-app keybind cheat sheet
+  - **Quit** - fully exits the app (this is the *only* way to quit; closing the window just hides it)
 
 ---
 
@@ -138,7 +138,7 @@ Clicking the **track title**, **artist**, or **album** opens the corresponding p
 
 ## Quitting
 
-Closing the overlay window (clicking outside it, pressing `Esc`, etc.) only **hides** it — the app stays alive in the tray so the global keybind keeps working.
+Closing the overlay window (clicking outside it, pressing `Esc`, etc.) only **hides** it the app stays alive in the tray so the global keybind keeps working.
 
 To **fully quit**, right click the tray icon and click **Quit**.
 
